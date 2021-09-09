@@ -2,7 +2,7 @@
 
 name: dev workflow
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -66,10 +66,10 @@ jobs:
       - name: list files
         run: ls -l .
 
-      - uses: codecov/codecov-action@v1
-        with:
-          fail_ci_if_error: true
-          files: coverage.xml
+      # - uses: codecov/codecov-action@v1
+      #   with:
+      #     fail_ci_if_error: true
+      #     files: coverage.xml
 
       - name: Build wheels and source tarball
         run: |
