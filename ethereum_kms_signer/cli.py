@@ -14,7 +14,7 @@ def help():
 def get_eth_address(key_id):
     kms_client = boto3.client("kms")
     pubkey = kms_client.get_public_key(KeyId=key_id)["PublicKey"]
-    print(der_encoded_public_key_to_eth_address(pubkey))
+    return der_encoded_public_key_to_eth_address(pubkey)
 
 
 def test():
