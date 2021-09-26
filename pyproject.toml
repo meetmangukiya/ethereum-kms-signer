@@ -48,6 +48,7 @@ toml = {version = "^0.10.2", optional = true}
 boto3 = "^1.18.46"
 pyasn1 = "^0.4.8"
 pycryptodome = "^3.10.1"
+ecdsa = "^0.17.0"
 
 [tool.poetry.extras]
 test = [
