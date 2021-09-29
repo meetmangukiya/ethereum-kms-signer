@@ -29,18 +29,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: generate change log
-        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issues: true
-          issuesWoLabels: true
-          pullRequests: true
-          prWoLabels: true
-          unreleased: true
-          addSections: '{"documentation":{"prefix":"**Documentation:**","labels":["documentation"]}}'
-          output: CHANGELOG.md
-
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-versions }}
@@ -75,7 +63,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          body_path: ./CHANGELOG.md
           files: dist/*.whl
           draft: false
           prerelease: false
