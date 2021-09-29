@@ -339,6 +339,54 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#why" class="md-nav__link">
+    Why?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickstart" class="md-nav__link">
+    Quickstart
+  </a>
+  
+    <nav class="md-nav" aria-label="Quickstart">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-ethereum-address-from-kms-key" class="md-nav__link">
+    Get ethereum address from KMS key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sign-a-transaction-object-with-kms-key" class="md-nav__link">
+    Sign a transaction object with KMS key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provisioning-aws-kms-key-with-terraform" class="md-nav__link">
+    Provisioning AWS KMS key with terraform
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#credits" class="md-nav__link">
     Credits
   </a>
@@ -486,6 +534,54 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#why" class="md-nav__link">
+    Why?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickstart" class="md-nav__link">
+    Quickstart
+  </a>
+  
+    <nav class="md-nav" aria-label="Quickstart">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-ethereum-address-from-kms-key" class="md-nav__link">
+    Get ethereum address from KMS key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sign-a-transaction-object-with-kms-key" class="md-nav__link">
+    Sign a transaction object with KMS key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provisioning-aws-kms-key-with-terraform" class="md-nav__link">
+    Provisioning AWS KMS key with terraform
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#credits" class="md-nav__link">
     Credits
   </a>
@@ -537,10 +633,91 @@
 </ul>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>TODO</li>
+<li>Sign Transactions</li>
 </ul>
+<h3 id="why">Why?<a class="headerlink" href="#why" title="Permanent link">&para;</a></h3>
+<p>In the crypto world, all the assets, tokens, crypto you might own is
+protected by the secrecy of the private key. This leads to a single point
+of failure in cases of leaking of private keys or losing keys because of
+lack of backup or any number of reasons. It becomes even harder when you want
+to share these keys as an organization among many individuals.</p>
+<p>Using something like AWS KMS can help with that and can provide full benefits
+of all the security features it provides. Sigantures can be created without the key
+ever leaving the AWS's infrastructure and could be effectively shared among individuals.</p>
+<p>This library provides a simple and an easy-to-use API for using AWS KMS to sign ethereum
+transactions and an easy integration with <code>web3.py</code> making it practical for using KMS to
+manage your private keys.</p>
+<h3 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h3>
+<h4 id="get-ethereum-address-from-kms-key">Get ethereum address from KMS key<a class="headerlink" href="#get-ethereum-address-from-kms-key" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">ethereum_kms_signer</span> <span class="kn">import</span> <span class="n">get_eth_address</span>
+<span class="n">address</span> <span class="o">=</span> <span class="n">get_eth_address</span><span class="p">(</span><span class="s1">&#39;THE-AWS-KMS-ID&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="sign-a-transaction-object-with-kms-key">Sign a transaction object with KMS key<a class="headerlink" href="#sign-a-transaction-object-with-kms-key" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">ethereum_kms_signer</span> <span class="kn">import</span> <span class="n">sign_transaction</span>
+
+<span class="n">dai_txn</span> <span class="o">=</span> <span class="n">dai</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">transfer</span><span class="p">(</span>
+    <span class="n">web3</span><span class="o">.</span><span class="n">toChecksumAddress</span><span class="p">(</span><span class="n">to_address</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">amount</span>
+<span class="p">)</span><span class="o">.</span><span class="n">buildTransaction</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;nonce&quot;</span><span class="p">:</span> <span class="n">nonce</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Signing the transaction with KMS key</span>
+<span class="n">signed_tx</span> <span class="o">=</span> <span class="n">sign_transaction</span><span class="p">(</span><span class="n">dai_txn</span><span class="p">,</span> <span class="n">key_id</span><span class="p">)</span>
+
+<span class="c1"># send transaction</span>
+<span class="n">tx_hash</span> <span class="o">=</span> <span class="n">web3</span><span class="o">.</span><span class="n">eth</span><span class="o">.</span><span class="n">sendRawTransaction</span><span class="p">(</span><span class="n">signed_tx</span><span class="o">.</span><span class="n">rawTransaction</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="provisioning-aws-kms-key-with-terraform">Provisioning AWS KMS key with terraform<a class="headerlink" href="#provisioning-aws-kms-key-with-terraform" title="Permanent link">&para;</a></h4>
+<p>An <code>ECC_SECG_P256K1</code> key can be provisioned using terraform by using the following
+configuration along with the aws provider. More details can be found on
+<a href="">provider docs</a></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kr">resource</span> <span class="nc">&quot;aws_kms_key&quot;</span> <span class="nv">&quot;my_very_secret_eth_account&quot;</span> <span class="p">{</span>
+    <span class="na">description</span>                 <span class="o">=</span> <span class="s2">&quot;ETH account #1&quot;</span>
+    <span class="na">key_usage</span>                   <span class="o">=</span> <span class="s2">&quot;SIGN_VERIFY&quot;</span>
+    <span class="na">customer_master_key_spec</span>    <span class="o">=</span> <span class="s2">&quot;ECC_SECG_P256K1&quot;</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span> <span class="nc">&quot;aws_kms_alias&quot;</span> <span class="nv">&quot;my_very_secret_eth_account&quot;</span> <span class="p">{</span>
+    <span class="na">name</span>            <span class="o">=</span> <span class="s2">&quot;eth-account-1&quot;</span>
+    <span class="na">target_key_id</span>   <span class="o">=</span> <span class="nv">aws_kms_key.my_very_secret_eth_account.id</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<p>Few examples can be found <a href="https://github.com/meetmangukiya/ethereum-kms-signer/tree/main/examples">here</a>.</p>
 <h3 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">&para;</a></h3>
 <p>This package was created with <a href="https://github.com/audreyr/cookiecutter">Cookiecutter</a> and the <a href="https://github.com/zillionare/cookiecutter-pypackage">zillionare/cookiecutter-pypackage</a> project template.</p>
+<p><a href="https://luhenning.medium.com/the-dark-side-of-the-elliptic-curve-signing-ethereum-transactions-with-aws-kms-in-javascript-83610d9a6f81">This article</a> has served as a good resource for implementing the functionality</p>
 <!-- END INCLUDE -->
                 
               
