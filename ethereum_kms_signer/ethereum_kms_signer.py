@@ -67,7 +67,7 @@ class BasicKmsAccount:
             SigningAlgorithm="ECDSA_SHA_256",
         )
         act_signature = signature["Signature"]
-        r, s, v = get_sig_r_s_v(act_signature, self._address)
+        r, s, v = get_sig_r_s_v(msg_hash, act_signature, self._address)
         return Signature(r, s, v)
 
 

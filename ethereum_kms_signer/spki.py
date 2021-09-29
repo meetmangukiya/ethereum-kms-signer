@@ -74,7 +74,7 @@ def normalize_address(address: str):
 #     )
 
 #     for idx, pk in enumerate(pks):
-#         x = int(pk.point.to_bytes("compressed").hex(), 16)
+#         x = int(pk.point.to_bytes("hybrid").hex(), 16)
 #         computed_address = public_key_int_to_eth_address(x)
 #         print(computed_address, expected_address)
 #         if computed_address == expected_address:
@@ -83,21 +83,21 @@ def normalize_address(address: str):
 #     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
 
 
-def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
+def get_sig_v(msg_hash: bytes, r: int, s: int, expected_address: str):
     acc = Account()
-    recovered = acc._recover_hash(signature, vrs=(27, r, s))
-    recovered2 = acc._recover_hash(signature, vrs=(28, r, s))
-    print(recovered, recovered2, expected_address)
+    recovered = acc._recover_hash(msg_hash, vrs=(27, r, s))
+    recovered2 = acc._recover_hash(msg_hash, vrs=(28, r, s))
 
+    chain_id = 4
     if normalize_address(recovered) == normalize_address(expected_address):
-        return 27
+        return 35 + 0 + (chain_id * 2) # 27
     elif normalize_address(recovered2) == normalize_address(expected_address):
-        return 28
+        return 35 + 1 + (chain_id * 2) # 28
 
     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
 
 
-def get_sig_r_s_v(signature: bytes, address: str):
+def get_sig_r_s_v(msg_hash: bytes, signature: bytes, address: str):
     r, s = get_sig_r_s(signature)
-    v = get_sig_v(signature, r, s, address)
+    v = get_sig_v(msg_hash, r, s, address)
     return r, s, v
