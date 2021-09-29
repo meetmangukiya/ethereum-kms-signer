@@ -1,8 +1,9 @@
 from Crypto.Hash import keccak
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.type import univ, namedtype
+from eth_account.account import Account
 from ecdsa.ecdsa import generator_secp256k1, Signature
-
+from eth_utils import to_bytes
 
 class SPKIAlgorithmIdentifierRecord(univ.Sequence):
     componentType = namedtype.NamedTypes(
@@ -56,16 +57,43 @@ def get_sig_r_s(signature: bytes):
     return r, s
 
 
-def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
-    ecdsa_signature = Signature(r, s)
-    pks = ecdsa_signature.recover_public_keys(
-        int(signature.hex(), 16), generator_secp256k1
-    )
+def normalize_address(address: str):
+    """
+    Returns a normalized, all caps address except the 0x at the beginning.
+    """
+    return "0x" + address.strip()[2:].upper()
 
-    for idx, pk in enumerate(pks):
-        x = int(pk.point.to_bytes("uncompressed").hex(), 16)
-        computed_address = public_key_int_to_eth_address(x)
-        if computed_address == expected_address:
-            return 27 + idx
+# def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
+#     print(len(signature))
+#     ecdsa_signature = Signature(r, s)
+
+#     pks = ecdsa_signature.recover_public_keys(
+#         r + s, generator_secp256k1
+#     )
+
+#     for idx, pk in enumerate(pks):
+#         x = int(pk.point.to_bytes("compressed").hex(), 16)
+#         computed_address = public_key_int_to_eth_address(x)
+#         print(computed_address, expected_address)
+#         if computed_address == expected_address:
+#             return 27 + idx
+
+#     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
+
+def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
+    acc = Account()
+    recovered = acc._recover_hash(signature, vrs=(27, r, s))
+    recovered2 = acc._recover_hash(signature, vrs=(28, r, s))
+    print(recovered, recovered2, expected_address)
+
+    if normalize_address(recovered) == normalize_address(expected_address):
+        return 27
+    elif normalize_address(recovered2) == normalize_address(expected_address):
+        return 28
 
     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
+
+def get_sig_r_s_v(signature: bytes, address: str):
+    r, s = get_sig_r_s(signature)
+    v = get_sig_v(signature, r, s, address)
+    return r, s, v
