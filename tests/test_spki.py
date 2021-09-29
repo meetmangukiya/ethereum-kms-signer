@@ -34,7 +34,7 @@ def test_get_sig_v():
             0x6A8971B06CD37B3DA4AD04BB1298FDA152A41E5C1104FD5D974D5C0A060A5E62,
             "0xE94E130546485B928C9C9B9A5E69EB787172952E",
         )
-        == 28
+        == 1
     )
 
     assert (
@@ -46,5 +46,5 @@ def test_get_sig_v():
             0x5B7F7AFE18221049A1E176A89A60B6C10DF8C0E838EDB9B2F11AE1FB50A28271,
             "0xE94E130546485B928C9C9B9A5E69EB787172952E",
         )
-        == 27
+        == 0
     )

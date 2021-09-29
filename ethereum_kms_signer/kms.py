@@ -1,29 +1,9 @@
-"""
-from ethereum_kms_signer import sign_transaction
-from web3 import Web3
-
-web3 = Web3(Web3.HTTPProvider(node_url))
-contract = web3.eth.contract(address=address, abi=abi)
-
-tx_obj = contract.functions.function_name().buildTransaction(
-    {
-        "nonce": nonce,
-        "from": address,
-    }
-)
-
-signed_tx = sign_transaction(tx_obj, "example_kms_key")
-tx_hash = signed_tx.hash
-web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-"""
 from collections.abc import Mapping
 from typing import NamedTuple
 
 import boto3
 from cytoolz import dissoc
-from eth_account._utils.legacy_transactions import (
-    serializable_unsigned_transaction_from_dict,
-)
+from eth_account._utils.legacy_transactions import Transaction
 from eth_account._utils.signing import sign_transaction_dict
 from eth_utils.curried import keccak
 from hexbytes import HexBytes
@@ -32,6 +12,8 @@ from .spki import der_encoded_public_key_to_eth_address, get_sig_r_s_v
 
 
 class Signature:
+    """Kinda compatible Signature class"""
+
     def __init__(self, r, s, v):
         self.r = r
         self.s = s
@@ -43,6 +25,8 @@ class Signature:
 
 
 class SignedTransaction(NamedTuple):
+    """Kinda compatible SignedTransaction class"""
+
     rawTransaction: HexBytes
     hash: HexBytes
     r: int
@@ -54,6 +38,8 @@ class SignedTransaction(NamedTuple):
 
 
 class BasicKmsAccount:
+    """Kinda compatible eth_keys.PrivateKey class"""
+
     def __init__(self, key_id, address):
         self._key_id = key_id
         self._kms_client = boto3.client("kms")
@@ -72,6 +58,12 @@ class BasicKmsAccount:
 
 
 def _sign_transaction(transaction_dict, address, kms_account):
+    """
+    Somewhat fixed up version of Account.sign_transaction, to use the custom PrivateKey
+    impl -- BasicKmsAccount
+    https://github.com/ethereum/eth-account/blob/master/eth_account/account.py#L619
+    """
+
     if not isinstance(transaction_dict, Mapping):
         raise TypeError("transaction_dict must be dict-like, got %r" % transaction_dict)
 
@@ -109,10 +101,16 @@ def _sign_transaction(transaction_dict, address, kms_account):
 
 
 def sign_transaction(tx_obj, key_id):
+    """Sign a transaction object with given AWS KMS key."""
     kms_client = boto3.client("kms")
-
     kms_pub_key_bytes = kms_client.get_public_key(KeyId=key_id)["PublicKey"]
     address = der_encoded_public_key_to_eth_address(kms_pub_key_bytes)
-
     kms_account = BasicKmsAccount(key_id, address)
     return _sign_transaction(tx_obj, address, kms_account)
+
+
+def get_eth_address(key_id):
+    """Calculate ethereum address for given AWS KMS key."""
+    kms_client = boto3.client("kms")
+    pubkey = kms_client.get_public_key(KeyId=key_id)["PublicKey"]
+    return der_encoded_public_key_to_eth_address(pubkey)
