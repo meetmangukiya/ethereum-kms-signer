@@ -26,7 +26,7 @@ Sign ETH transactions with keys stored in AWS KMS
 
 ## Video Demo
 
-[![Python Ethereum KMS Signer Demo](https://user-images.githubusercontent.com/7620533/135247248-7c3efda3-b8f8-4936-a2b6-363cb05ba513.png)](https://youtu.be/fZ-mtMb2BjY?t=35s "Python Ethereum KMS Signer Demo")
+[![Python Ethereum KMS Signer Demo](https://user-images.githubusercontent.com/7620533/135247248-7c3efda3-b8f8-4936-a2b6-363cb05ba513.png)](https://youtu.be/fZ-mtMb2BjY "Python Ethereum KMS Signer Demo")
 
 ## Why?
 
