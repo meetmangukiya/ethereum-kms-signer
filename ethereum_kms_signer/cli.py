@@ -5,21 +5,21 @@ import json
 import boto3
 import fire
 
-from .kms import get_eth_address, sign_transaction
+from .kms import SignedTransaction, get_eth_address, sign_transaction
 from .spki import der_encoded_public_key_to_eth_address
 
 
-def help():
+def help() -> None:
     print("ethereum_kms_signer")
     print("=" * len("ethereum_kms_signer"))
     print("Sign ETH transactions with keys stored in AWS KMS")
 
 
-def sign(key_id: str, data: dict):
+def sign(key_id: str, data: dict) -> SignedTransaction:
     return sign_transaction(data, key_id)
 
 
-def main():
+def main() -> None:
     fire.Fire({"help": help, "address": get_eth_address, "sign": sign})
 
 

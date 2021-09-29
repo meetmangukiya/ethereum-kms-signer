@@ -4,7 +4,9 @@ from web3 import Web3
 from ethereum_kms_signer.kms import get_eth_address, sign_transaction
 
 
-def ether_transfer(web3_provider: str, key_id: str, to_address: str, amount: float):
+def ether_transfer(
+    web3_provider: str, key_id: str, to_address: str, amount: float
+) -> None:
     web3 = Web3(Web3.HTTPProvider(web3_provider))
     self_address = web3.toChecksumAddress(get_eth_address(key_id).lower())
     nonce = web3.eth.get_transaction_count(self_address)

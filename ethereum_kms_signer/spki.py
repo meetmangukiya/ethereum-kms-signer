@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from Crypto.Hash import keccak
 from ecdsa.ecdsa import Signature, generator_secp256k1
 from eth_account.account import Account
@@ -27,7 +29,7 @@ class ECDSASignatureRecord(univ.Sequence):
     )
 
 
-def public_key_int_to_eth_address(pubkey: int):
+def public_key_int_to_eth_address(pubkey: int) -> str:
     """
     Given an integer public key, calculate the ethereum address.
     """
@@ -39,7 +41,7 @@ def public_key_int_to_eth_address(pubkey: int):
     return "0x" + str(bytes.fromhex(k.hexdigest())[-20:].hex()).upper()
 
 
-def der_encoded_public_key_to_eth_address(pubkey: bytes):
+def der_encoded_public_key_to_eth_address(pubkey: bytes) -> str:
     """
     Given a KMS Public Key, calculate the ethereum address.
     """
@@ -49,7 +51,7 @@ def der_encoded_public_key_to_eth_address(pubkey: bytes):
     )
 
 
-def get_sig_r_s(signature: bytes):
+def get_sig_r_s(signature: bytes) -> Tuple[int, int]:
     """
     Given a KMS signature, calculate r and s.
     """
@@ -67,14 +69,14 @@ def get_sig_r_s(signature: bytes):
     return r, s
 
 
-def normalize_address(address: str):
+def normalize_address(address: str) -> str:
     """
     Returns a normalized, all caps address except the 0x at the beginning.
     """
     return "0x" + address.strip()[2:].upper()
 
 
-def get_sig_v(msg_hash: bytes, r: int, s: int, expected_address: str):
+def get_sig_v(msg_hash: bytes, r: int, s: int, expected_address: str) -> int:
     """
     Given a message hash, r, s and an ethereum address, recover the
     recovery parameter v.
@@ -91,7 +93,9 @@ def get_sig_v(msg_hash: bytes, r: int, s: int, expected_address: str):
     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
 
 
-def get_sig_r_s_v(msg_hash: bytes, signature: bytes, address: str):
+def get_sig_r_s_v(
+    msg_hash: bytes, signature: bytes, address: str
+) -> Tuple[int, int, int]:
     """
     Given a message hash, a KMS signature and an ethereum address calculate r,
     s, and v.

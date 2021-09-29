@@ -12,7 +12,7 @@ ERC20_ABI = json.loads(
 
 def erc20_transfer(
     web3_provider: str, token_address: str, key_id: str, to_address: str, amount: int
-):
+) -> None:
     web3 = Web3(Web3.HTTPProvider(web3_provider))
     dai = web3.eth.contract(address=token_address, abi=ERC20_ABI)
 

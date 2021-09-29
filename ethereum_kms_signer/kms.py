@@ -1,12 +1,13 @@
 from collections.abc import Mapping
-from typing import NamedTuple
+from typing import Any, NamedTuple, Tuple
 
 import boto3
-from toolz import dissoc
 from eth_account._utils.legacy_transactions import Transaction
 from eth_account._utils.signing import sign_transaction_dict
 from eth_utils.curried import keccak
 from hexbytes import HexBytes
+from mypy_boto3_kms import KMSClient
+from toolz import dissoc
 
 from .spki import der_encoded_public_key_to_eth_address, get_sig_r_s_v
 
@@ -14,14 +15,21 @@ from .spki import der_encoded_public_key_to_eth_address, get_sig_r_s_v
 class Signature:
     """Kinda compatible Signature class"""
 
-    def __init__(self, r, s, v):
+    def __init__(self, r: int, s: int, v: int) -> None:
         self.r = r
         self.s = s
         self.v = v
 
     @property
-    def vrs(self):
-        return [self.v, self.r, self.s]
+    def vrs(self) -> Tuple[int, int, int]:
+        return self.v, self.r, self.s
+
+
+def __getitem__(self: Any, index: Any) -> Any:
+    try:
+        return tuple.__getitem__(self, index)
+    except TypeError:
+        return getattr(self, index)
 
 
 class SignedTransaction(NamedTuple):
@@ -33,14 +41,14 @@ class SignedTransaction(NamedTuple):
     s: int
     v: int
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: Any) -> Any:
         return __getitem__(self, index)
 
 
 class BasicKmsAccount:
     """Kinda compatible eth_keys.PrivateKey class"""
 
-    def __init__(self, key_id, address, kms_client=None):
+    def __init__(self, key_id: str, address: str, kms_client: KMSClient = None):
         self._key_id = key_id
 
         if kms_client is None:
@@ -61,7 +69,9 @@ class BasicKmsAccount:
         return Signature(r, s, v)
 
 
-def _sign_transaction(transaction_dict, address, kms_account):
+def _sign_transaction(
+    transaction_dict: dict, address: str, kms_account: BasicKmsAccount
+) -> SignedTransaction:
     """
     Somewhat fixed up version of Account.sign_transaction, to use the custom PrivateKey
     impl -- BasicKmsAccount
@@ -104,7 +114,9 @@ def _sign_transaction(transaction_dict, address, kms_account):
     )
 
 
-def sign_transaction(tx_obj, key_id, kms_client=None):
+def sign_transaction(
+    tx_obj: dict, key_id: str, kms_client: KMSClient = None
+) -> SignedTransaction:
     """Sign a transaction object with given AWS KMS key."""
     if kms_client is None:
         kms_client = boto3.client("kms")
@@ -114,7 +126,7 @@ def sign_transaction(tx_obj, key_id, kms_client=None):
     return _sign_transaction(tx_obj, address, kms_account)
 
 
-def get_eth_address(key_id, kms_client=None):
+def get_eth_address(key_id: str, kms_client: KMSClient = None) -> str:
     """Calculate ethereum address for given AWS KMS key."""
     if kms_client is None:
         kms_client = boto3.client("kms")
