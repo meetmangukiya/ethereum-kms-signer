@@ -24,6 +24,10 @@ Sign ETH transactions with keys stored in AWS KMS
 
 * Sign Transactions
 
+## Video Demo
+
+[![Python Ethereum KMS Signer Demo](https://img.youtube.com/vi/fZ-mtMb2BjY/0.jpg)](https://youtu.be/fZ-mtMb2BjY?t=35s "Python Ethereum KMS Signer Demo")
+
 ## Why?
 
 In the crypto world, all the assets, tokens, crypto you might own is
