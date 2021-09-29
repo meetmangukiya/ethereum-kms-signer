@@ -5,3 +5,4 @@ __email__ = "meet@flamy.dev"
 __version__ = "0.1.0"
 
 from .kms import sign_transaction
+from .kms import get_eth_address
