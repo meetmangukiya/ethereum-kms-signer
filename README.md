@@ -8,11 +8,7 @@
 </a>
 
 <a href="https://github.com/meetmangukiya/ethereum_kms_signer/actions">
-    <img src="https://github.com/meetmangukiya/ethereum_kms_signer/actions/workflows/main.yml/badge.svg?branch=release" alt="CI Status">
-</a>
-
-<a href="https://ethereum-kms-signer.readthedocs.io/en/latest/?badge=latest">
-    <img src="https://readthedocs.org/projects/ethereum-kms-signer/badge/?version=latest" alt="Documentation Status">
+    <img src="https://github.com/meetmangukiya/ethereum_kms_signer/actions/workflows/dev.yml/badge.svg?branch=main" alt="CI Status">
 </a>
 
 </p>
@@ -22,7 +18,7 @@ Sign ETH transactions with keys stored in AWS KMS
 
 
 * Free software: MIT
-* Documentation: <https://ethereum-kms-signer.readthedocs.io>
+* Documentation: <https://meetmangukiya.github.io/ethereum-kms-signer>
 
 
 ## Features

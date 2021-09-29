@@ -2,7 +2,7 @@ from collections.abc import Mapping
 from typing import NamedTuple
 
 import boto3
-from cytoolz import dissoc
+from toolz import dissoc
 from eth_account._utils.legacy_transactions import Transaction
 from eth_account._utils.signing import sign_transaction_dict
 from eth_utils.curried import keccak

@@ -1345,7 +1345,7 @@ test = ["pytest", "black", "isort", "flake8", "flake8-docstrings", "pytest-cov"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1,<4.0"
-content-hash = "21ee6c3507923178459c60fcfb90b8023af19906d1ab54c218a6c7443b425be4"
+content-hash = "7984e26a3a4d3dbcb9531939b150115f65d2a5d2a150103f1e9ed983e6a9d770"
 
 [metadata.files]
 appdirs = [
