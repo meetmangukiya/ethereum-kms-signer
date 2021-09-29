@@ -1,9 +1,10 @@
 from Crypto.Hash import keccak
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.type import univ, namedtype
+from ecdsa.ecdsa import Signature, generator_secp256k1
 from eth_account.account import Account
-from ecdsa.ecdsa import generator_secp256k1, Signature
 from eth_utils import to_bytes
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.type import namedtype, univ
+
 
 class SPKIAlgorithmIdentifierRecord(univ.Sequence):
     componentType = namedtype.NamedTypes(
@@ -63,6 +64,7 @@ def normalize_address(address: str):
     """
     return "0x" + address.strip()[2:].upper()
 
+
 # def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
 #     print(len(signature))
 #     ecdsa_signature = Signature(r, s)
@@ -80,6 +82,7 @@ def normalize_address(address: str):
 
 #     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
 
+
 def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
     acc = Account()
     recovered = acc._recover_hash(signature, vrs=(27, r, s))
@@ -92,6 +95,7 @@ def get_sig_v(signature: bytes, r: int, s: int, expected_address: str):
         return 28
 
     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
+
 
 def get_sig_r_s_v(signature: bytes, address: str):
     r, s = get_sig_r_s(signature)

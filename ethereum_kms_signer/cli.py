@@ -1,27 +1,23 @@
 """Console script for ethereum_kms_signer."""
 
-import fire
 import boto3
-from .spki import der_encoded_public_key_to_eth_address, get_sig_r_s_v
 import eth_account.signers.base
-from eth_account.messages import SignableMessage
-from eth_utils import to_bytes
-from hexbytes import HexBytes
-from eth_account.datastructures import SignedMessage, SignedTransaction
-from eth_account.messages import _hash_eip191_message
-from cytoolz import (
-    dissoc,
-)
-from eth_utils.curried import keccak
+import fire
+from cytoolz import dissoc
 from eth_account._utils.legacy_transactions import (
     Transaction,
     UnsignedTransaction,
-    serializable_unsigned_transaction_from_dict,
     encode_transaction,
+    serializable_unsigned_transaction_from_dict,
 )
-from eth_account._utils.typed_transactions import (
-    TypedTransaction,
-)
+from eth_account._utils.typed_transactions import TypedTransaction
+from eth_account.datastructures import SignedMessage, SignedTransaction
+from eth_account.messages import SignableMessage, _hash_eip191_message
+from eth_utils import to_bytes
+from eth_utils.curried import keccak
+from hexbytes import HexBytes
+
+from .spki import der_encoded_public_key_to_eth_address, get_sig_r_s_v
 
 
 def help():
@@ -44,21 +40,25 @@ class KmsSigner(eth_account.signers.base.BaseAccount):
 
     # https://github.com/ethereum/eth-account/blob/bd3dc2c0e85934b9c47980053d9f1d16a7540990/eth_account/_utils/signing.py#L130
     def _pad_to_eth_word(self, bytes_val):
-        return bytes_val.rjust(32, b'\0')
+        return bytes_val.rjust(32, b"\0")
 
     def _sign_message_signature_der(self, sig: bytes):
-        r, s, v = get_sig_r_s_v(sig['Signature'])
-        signature_bytes = self._pad_to_eth_word(to_bytes(r)) + self._pad_to_eth_word(to_bytes(s)) + to_bytes(v)
+        r, s, v = get_sig_r_s_v(sig["Signature"])
+        signature_bytes = (
+            self._pad_to_eth_word(to_bytes(r))
+            + self._pad_to_eth_word(to_bytes(s))
+            + to_bytes(v)
+        )
         return r, s, v, signature_bytes
 
     def _kms_sign(self, digest: bytes):
         sign_res = self._kms_client.sign(
             KeyId=self._key_id,
             Message=digest,
-            MessageType='DIGEST',
-            SigningAlgorithm="ECDSA_SHA_256"
+            MessageType="DIGEST",
+            SigningAlgorithm="ECDSA_SHA_256",
         )
-        return sign_res['Signature']
+        return sign_res["Signature"]
 
     def _sign_message_hash_with_kms(self, digest: bytes):
         return self._sign_message_signature_der(self._kms_sign(digest))
@@ -70,7 +70,7 @@ class KmsSigner(eth_account.signers.base.BaseAccount):
             r=r,
             s=s,
             v=v,
-            signature=HexBytes(signature_bytes)
+            signature=HexBytes(signature_bytes),
         )
 
     @property
@@ -86,7 +86,9 @@ class KmsSigner(eth_account.signers.base.BaseAccount):
         return self._sign_message(message_hash)
 
     def _sign_transction_dict(self, transaction_dict: dict):
-        unsigned_transaction = serializable_unsigned_transaction_from_dict(transaction_dict)
+        unsigned_transaction = serializable_unsigned_transaction_from_dict(
+            transaction_dict
+        )
         transaction_hash = unsigned_transaction.hash()
 
         if isinstance(unsigned_transaction, UnsignedTransaction):
@@ -102,7 +104,9 @@ class KmsSigner(eth_account.signers.base.BaseAccount):
             (v, r, s) = eth_key.sign_msg_hash(transaction_hash).vrs
         else:
             # Cannot happen, but better for code to be defensive + self-documenting.
-            raise TypeError("unknown Transaction object: %s" % type(unsigned_transaction))
+            raise TypeError(
+                "unknown Transaction object: %s" % type(unsigned_transaction)
+            )
 
         # serialize transaction with rlp
         encoded_transaction = encode_transaction(unsigned_transaction, vrs=(v, r, s))
@@ -111,14 +115,17 @@ class KmsSigner(eth_account.signers.base.BaseAccount):
 
     def signTransaction(self, tx_dict: dict):
         # allow from field, *only* if it matches the private key
-        if 'from' in tx_dict:
-            if tx_dict['from'] == self.address:
-                sanitized_transaction = dissoc(tx_dict, 'from')
+        if "from" in tx_dict:
+            if tx_dict["from"] == self.address:
+                sanitized_transaction = dissoc(tx_dict, "from")
             else:
-                raise TypeError("from field must match key's %s, but it was %s" % (
-                    self.address,
-                    tx_dict['from'],
-                ))
+                raise TypeError(
+                    "from field must match key's %s, but it was %s"
+                    % (
+                        self.address,
+                        tx_dict["from"],
+                    )
+                )
         else:
             sanitized_transaction = tx_dict
 
@@ -150,10 +157,13 @@ def test():
 
 
 import json
+
 from .ethereum_kms_signer import sign_transaction
+
 
 def sign(key_id: str, data: dict):
     return sign_transaction(data, key_id)
+
 
 def main():
     fire.Fire({"help": help, "test": test, "address": get_eth_address, "sign": sign})
