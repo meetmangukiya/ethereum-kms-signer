@@ -48,9 +48,7 @@ plugins:
   - include-markdown
   - search:
       lang: en
-  - mkdocstrings:
-      watch:
-        - ethereum_kms_signer
+  - mkdocstrings
 extra:
   social:
     - icon: fontawesome/brands/twitter
