@@ -362,6 +362,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    Authentication
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#get-ethereum-address-from-kms-key" class="md-nav__link">
     Get ethereum address from KMS key
   </a>
@@ -486,6 +493,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    Authentication
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#get-ethereum-address-from-kms-key" class="md-nav__link">
     Get ethereum address from KMS key
   </a>
@@ -535,6 +549,48 @@
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    import ethereum_kms_signer
 </code></pre></div>
 </td></tr></table>
+<h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h3>
+<p>The library uses <code>boto3</code>, by default you do not need to provide or do anything if:
+1. You have config stored in <code>~/.aws</code>
+2. Have set the relevant environment variables</p>
+<p>More info <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#configuring-credentials">here</a>.</p>
+<p>You can provide the kwarg <code>kms_client</code> to which an authenticated kms client instance can be passed.
+For instance, if you want to provide keys via local variables you can do:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">ethereum_kms_signer</span> <span class="kn">import</span> <span class="n">sign_transaction</span><span class="p">,</span> <span class="n">get_eth_address</span>
+
+<span class="n">ACCESS_KEY</span> <span class="o">=</span> <span class="s1">&#39;access_key&#39;</span>
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;secret_key&#39;</span>
+<span class="n">SESSION_TOKEN</span> <span class="o">=</span> <span class="s1">&#39;session_token&#39;</span>
+
+<span class="n">kms_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
+    <span class="s1">&#39;kms&#39;</span><span class="p">,</span>
+    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="n">ACCESS_KEY</span><span class="p">,</span>
+    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="n">SECRET_KEY</span><span class="p">,</span>
+    <span class="n">aws_session_token</span><span class="o">=</span><span class="n">SESSION_TOKEN</span>
+<span class="p">)</span>
+
+<span class="n">key_id</span> <span class="o">=</span> <span class="s1">&#39;key_id&#39;</span>
+<span class="n">address</span> <span class="o">=</span> <span class="n">get_eth_address</span><span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">kms_client</span><span class="p">)</span>
+<span class="n">signed_tx</span> <span class="o">=</span> <span class="n">sign_transaction</span><span class="p">(</span><span class="n">tx_obj</span><span class="p">,</span> <span class="n">key_id</span><span class="p">,</span> <span class="n">kms_client</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="get-ethereum-address-from-kms-key">Get ethereum address from KMS key<a class="headerlink" href="#get-ethereum-address-from-kms-key" title="Permanent link">&para;</a></h3>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>

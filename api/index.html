@@ -918,7 +918,7 @@ __repr__<span class="p">(</span><span class="bp">self</span><span class="p">)</s
 <h4 class="doc doc-heading" id="ethereum_kms_signer.kms.get_eth_address">
 
         <code class="highlight language-python">
-get_eth_address<span class="p">(</span><span class="n">key_id</span><span class="p">)</span>        </code>
+get_eth_address<span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">kms_client</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>        </code>
 
 
       <a class="headerlink" href="#ethereum_kms_signer.kms.get_eth_address" title="Permanent link">&para;</a></h4>
@@ -927,9 +927,10 @@ get_eth_address<span class="p">(</span><span class="n">key_id</span><span class=
 <details class="quote">
           <summary>Source code in <code>ethereum_kms_signer/kms.py</code></summary>
           <div class="highlight">
-<pre><span></span><code><span class="k">def</span> <span class="nf">get_eth_address</span><span class="p">(</span><span class="n">key_id</span><span class="p">):</span>
+<pre><span></span><code><span class="k">def</span> <span class="nf">get_eth_address</span><span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">kms_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">"""Calculate ethereum address for given AWS KMS key."""</span>
-    <span class="n">kms_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"kms"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kms_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kms_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"kms"</span><span class="p">)</span>
     <span class="n">pubkey</span> <span class="o">=</span> <span class="n">kms_client</span><span class="o">.</span><span class="n">get_public_key</span><span class="p">(</span><span class="n">KeyId</span><span class="o">=</span><span class="n">key_id</span><span class="p">)[</span><span class="s2">"PublicKey"</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">der_encoded_public_key_to_eth_address</span><span class="p">(</span><span class="n">pubkey</span><span class="p">)</span>
 </code></pre>
@@ -941,7 +942,7 @@ get_eth_address<span class="p">(</span><span class="n">key_id</span><span class=
 <h4 class="doc doc-heading" id="ethereum_kms_signer.kms.sign_transaction">
 
         <code class="highlight language-python">
-sign_transaction<span class="p">(</span><span class="n">tx_obj</span><span class="p">,</span> <span class="n">key_id</span><span class="p">)</span>        </code>
+sign_transaction<span class="p">(</span><span class="n">tx_obj</span><span class="p">,</span> <span class="n">key_id</span><span class="p">,</span> <span class="n">kms_client</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>        </code>
 
 
       <a class="headerlink" href="#ethereum_kms_signer.kms.sign_transaction" title="Permanent link">&para;</a></h4>
@@ -950,12 +951,13 @@ sign_transaction<span class="p">(</span><span class="n">tx_obj</span><span class
 <details class="quote">
           <summary>Source code in <code>ethereum_kms_signer/kms.py</code></summary>
           <div class="highlight">
-<pre><span></span><code><span class="k">def</span> <span class="nf">sign_transaction</span><span class="p">(</span><span class="n">tx_obj</span><span class="p">,</span> <span class="n">key_id</span><span class="p">):</span>
+<pre><span></span><code><span class="k">def</span> <span class="nf">sign_transaction</span><span class="p">(</span><span class="n">tx_obj</span><span class="p">,</span> <span class="n">key_id</span><span class="p">,</span> <span class="n">kms_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">"""Sign a transaction object with given AWS KMS key."""</span>
-    <span class="n">kms_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"kms"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kms_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kms_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"kms"</span><span class="p">)</span>
     <span class="n">kms_pub_key_bytes</span> <span class="o">=</span> <span class="n">kms_client</span><span class="o">.</span><span class="n">get_public_key</span><span class="p">(</span><span class="n">KeyId</span><span class="o">=</span><span class="n">key_id</span><span class="p">)[</span><span class="s2">"PublicKey"</span><span class="p">]</span>
     <span class="n">address</span> <span class="o">=</span> <span class="n">der_encoded_public_key_to_eth_address</span><span class="p">(</span><span class="n">kms_pub_key_bytes</span><span class="p">)</span>
-    <span class="n">kms_account</span> <span class="o">=</span> <span class="n">BasicKmsAccount</span><span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span>
+    <span class="n">kms_account</span> <span class="o">=</span> <span class="n">BasicKmsAccount</span><span class="p">(</span><span class="n">key_id</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">kms_client</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_sign_transaction</span><span class="p">(</span><span class="n">tx_obj</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">kms_account</span><span class="p">)</span>
 </code></pre>
 </div>
