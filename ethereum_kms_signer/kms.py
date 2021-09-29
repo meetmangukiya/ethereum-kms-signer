@@ -40,9 +40,13 @@ class SignedTransaction(NamedTuple):
 class BasicKmsAccount:
     """Kinda compatible eth_keys.PrivateKey class"""
 
-    def __init__(self, key_id, address):
+    def __init__(self, key_id, address, kms_client=None):
         self._key_id = key_id
-        self._kms_client = boto3.client("kms")
+
+        if kms_client is None:
+            kms_client = boto3.client("kms")
+
+        self._kms_client = kms_client
         self._address = address
 
     def sign_msg_hash(self, msg_hash: HexBytes) -> Signature:
@@ -100,17 +104,19 @@ def _sign_transaction(transaction_dict, address, kms_account):
     )
 
 
-def sign_transaction(tx_obj, key_id):
+def sign_transaction(tx_obj, key_id, kms_client=None):
     """Sign a transaction object with given AWS KMS key."""
-    kms_client = boto3.client("kms")
+    if kms_client is None:
+        kms_client = boto3.client("kms")
     kms_pub_key_bytes = kms_client.get_public_key(KeyId=key_id)["PublicKey"]
     address = der_encoded_public_key_to_eth_address(kms_pub_key_bytes)
-    kms_account = BasicKmsAccount(key_id, address)
+    kms_account = BasicKmsAccount(key_id, address, kms_client)
     return _sign_transaction(tx_obj, address, kms_account)
 
 
-def get_eth_address(key_id):
+def get_eth_address(key_id, kms_client=None):
     """Calculate ethereum address for given AWS KMS key."""
-    kms_client = boto3.client("kms")
+    if kms_client is None:
+        kms_client = boto3.client("kms")
     pubkey = kms_client.get_public_key(KeyId=key_id)["PublicKey"]
     return der_encoded_public_key_to_eth_address(pubkey)
