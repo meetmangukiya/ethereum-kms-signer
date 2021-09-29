@@ -1,5 +1,9 @@
 # History
 
+## 0.1.4 (2021-09-29)
+
+* Type hints for everything!
+
 ## 0.1.3 (2021-09-29)
 
 * Allow overriding kms_client.
