@@ -53,12 +53,8 @@ extra:
   social:
     - icon: fontawesome/brands/twitter
       # replace with your own tweet link below
-      link: http://www.jieyu.ai
+      link: https://twitter.com/meetmangukiya98
       name: Tweet
-    - icon: fontawesome/brands/facebook
-      # replace with your own facebook link below
-      link: http://www.jieyu.ai
-      name: Facebook
     - icon: fontawesome/brands/github
       link: https://github.com/meetmangukiya/ethereum_kms_signer
       name: Github
