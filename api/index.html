@@ -10,7 +10,7 @@
       
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-6.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-6.2.8">
     
     
       
@@ -494,13 +494,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ethereum_kms_signer.spki.normalize_address" class="md-nav__link">
-    normalize_address()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#ethereum_kms_signer.spki.public_key_int_to_eth_address" class="md-nav__link">
     public_key_int_to_eth_address()
   </a>
@@ -708,13 +701,6 @@
           <li class="md-nav__item">
   <a href="#ethereum_kms_signer.spki.get_sig_v" class="md-nav__link">
     get_sig_v()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ethereum_kms_signer.spki.normalize_address" class="md-nav__link">
-    normalize_address()
   </a>
   
 </li>
@@ -1089,36 +1075,14 @@ recovery parameter v.</p>
     <span class="n">acc</span> <span class="o">=</span> <span class="n">Account</span><span class="p">()</span>
     <span class="n">recovered</span> <span class="o">=</span> <span class="n">acc</span><span class="o">.</span><span class="n">_recover_hash</span><span class="p">(</span><span class="n">msg_hash</span><span class="p">,</span> <span class="n">vrs</span><span class="o">=</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
     <span class="n">recovered2</span> <span class="o">=</span> <span class="n">acc</span><span class="o">.</span><span class="n">_recover_hash</span><span class="p">(</span><span class="n">msg_hash</span><span class="p">,</span> <span class="n">vrs</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+    <span class="n">expected_checksum_address</span> <span class="o">=</span> <span class="n">to_checksum_address</span><span class="p">(</span><span class="n">expected_address</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">normalize_address</span><span class="p">(</span><span class="n">recovered</span><span class="p">)</span> <span class="o">==</span> <span class="n">normalize_address</span><span class="p">(</span><span class="n">expected_address</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">recovered</span> <span class="o">==</span> <span class="n">expected_checksum_address</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">elif</span> <span class="n">normalize_address</span><span class="p">(</span><span class="n">recovered2</span><span class="p">)</span> <span class="o">==</span> <span class="n">normalize_address</span><span class="p">(</span><span class="n">expected_address</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">recovered2</span> <span class="o">==</span> <span class="n">expected_checksum_address</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">1</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Invalid Signature, cannot compute v, addresses do not match!"</span><span class="p">)</span>
-</code></pre>
-</div>
-</details>
-</div>
-</div>
-<div class="doc doc-object doc-function">
-<h4 class="doc doc-heading" id="ethereum_kms_signer.spki.normalize_address">
-
-        <code class="highlight language-python">
-normalize_address<span class="p">(</span><span class="n">address</span><span class="p">)</span>        </code>
-
-
-      <a class="headerlink" href="#ethereum_kms_signer.spki.normalize_address" title="Permanent link">&para;</a></h4>
-<div class="doc doc-contents ">
-<p>Returns a normalized, all caps address except the 0x at the beginning.</p>
-<details class="quote">
-          <summary>Source code in <code>ethereum_kms_signer/spki.py</code></summary>
-          <div class="highlight">
-<pre><span></span><code><span class="k">def</span> <span class="nf">normalize_address</span><span class="p">(</span><span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">"""</span>
-<span class="sd">    Returns a normalized, all caps address except the 0x at the beginning.</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="s2">"0x"</span> <span class="o">+</span> <span class="n">address</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 </code></pre>
 </div>
 </details>
@@ -1146,7 +1110,7 @@ public_key_int_to_eth_address<span class="p">(</span><span class="n">pubkey</spa
 
     <span class="n">k</span> <span class="o">=</span> <span class="n">keccak</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">digest_bits</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
     <span class="n">k</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">padded_hex_string</span><span class="p">))</span>
-    <span class="k">return</span> <span class="s2">"0x"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())[</span><span class="o">-</span><span class="mi">20</span><span class="p">:]</span><span class="o">.</span><span class="n">hex</span><span class="p">())</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">to_checksum_address</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())[</span><span class="o">-</span><span class="mi">20</span><span class="p">:]</span><span class="o">.</span><span class="n">hex</span><span class="p">())</span>
 </code></pre>
 </div>
 </details>
