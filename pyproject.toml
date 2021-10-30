@@ -54,7 +54,6 @@ hexbytes = "^0.2.2"
 cytoolz = "^0.11.0"
 eth-keys = "^0.3.3"
 eth-rlp = "^0.2.1"
-ecdsa = "^0.17.0"
 livereload = "^2.6.3"
 toolz = "^0.11.1"
 boto3-stubs = {extras = ["kms"], version = "^1.18.50"}

@@ -1,9 +1,7 @@
 from typing import Tuple
 
 from Crypto.Hash import keccak
-from ecdsa.ecdsa import Signature, generator_secp256k1
 from eth_account.account import Account
-from eth_utils import to_bytes
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.type import namedtype, univ
 
