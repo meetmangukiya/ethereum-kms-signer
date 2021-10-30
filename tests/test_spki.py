@@ -12,7 +12,7 @@ def test_der_encoded_public_key_to_eth_address():
     pubkey = b64decode(b64_pubkey)
     assert (
         der_encoded_public_key_to_eth_address(pubkey)
-        == "0x7117AC214FD4ECEE0994ACD4A65D95E2F24AB14A"
+        == "0x7117AC214fd4EceE0994acd4a65d95e2F24ab14A"
     )
 
 

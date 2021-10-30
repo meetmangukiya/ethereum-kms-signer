@@ -4,6 +4,7 @@ from Crypto.Hash import keccak
 from eth_account.account import Account
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.type import namedtype, univ
+from eth_utils import to_checksum_address
 
 
 class SPKIAlgorithmIdentifierRecord(univ.Sequence):
@@ -36,7 +37,7 @@ def public_key_int_to_eth_address(pubkey: int) -> str:
 
     k = keccak.new(digest_bits=256)
     k.update(bytes.fromhex(padded_hex_string))
-    return "0x" + str(bytes.fromhex(k.hexdigest())[-20:].hex()).upper()
+    return to_checksum_address(bytes.fromhex(k.hexdigest())[-20:].hex())
 
 
 def der_encoded_public_key_to_eth_address(pubkey: bytes) -> str:
@@ -67,13 +68,6 @@ def get_sig_r_s(signature: bytes) -> Tuple[int, int]:
     return r, s
 
 
-def normalize_address(address: str) -> str:
-    """
-    Returns a normalized, all caps address except the 0x at the beginning.
-    """
-    return "0x" + address.strip()[2:].upper()
-
-
 def get_sig_v(msg_hash: bytes, r: int, s: int, expected_address: str) -> int:
     """
     Given a message hash, r, s and an ethereum address, recover the
@@ -82,10 +76,11 @@ def get_sig_v(msg_hash: bytes, r: int, s: int, expected_address: str) -> int:
     acc = Account()
     recovered = acc._recover_hash(msg_hash, vrs=(27, r, s))
     recovered2 = acc._recover_hash(msg_hash, vrs=(28, r, s))
+    expected_checksum_address = to_checksum_address(expected_address)
 
-    if normalize_address(recovered) == normalize_address(expected_address):
+    if recovered == expected_checksum_address:
         return 0
-    elif normalize_address(recovered2) == normalize_address(expected_address):
+    elif recovered2 == expected_checksum_address:
         return 1
 
     raise ValueError("Invalid Signature, cannot compute v, addresses do not match!")
