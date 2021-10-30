@@ -1,5 +1,10 @@
 # History
 
+## 0.1.5 (2021-10-30)
+
+* removed unused packages
+* marked relevant packages as dev-dependencies
+
 ## 0.1.4 (2021-09-29)
 
 * Type hints for everything!
