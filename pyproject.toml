@@ -27,46 +27,47 @@ packages = [
 python = ">=3.6.1,<4.0"
 fire = "0.4.0"
 
-black  = { version = "20.8b1", optional = true}
-isort  = { version = "5.6.4", optional = true}
-flake8  = { version = "3.8.4", optional = true}
-flake8-docstrings = { version = "^1.6.0", optional = true }
-pytest  = { version = "6.1.2", optional = true}
-pytest-cov  = { version = "2.10.1", optional = true}
-tox  = { version = "^3.20.1", optional = true}
-virtualenv  = { version = "^20.2.2", optional = true}
-pip  = { version = "^20.3.1", optional = true}
-mkdocs  = { version = "^1.1.2", optional = true}
-mkdocs-include-markdown-plugin  = { version = "^1.0.0", optional = true}
-mkdocs-material  = { version = "^6.1.7", optional = true}
-mkdocstrings  = { version = "^0.13.6", optional = true}
-mkdocs-material-extensions  = { version = "^1.0.1", optional = true}
-twine  = { version = "^3.3.0", optional = true}
-mkdocs-autorefs = {version = "0.1.1", optional = true}
-pre-commit = {version = "^2.12.0", optional = true}
-toml = {version = "^0.10.2", optional = true}
-boto3 = "^1.18.46"
+boto3 = "^1.5.12"
 pyasn1 = "^0.4.8"
 pycryptodome = "^3.10.1"
-eth-account = "^0.5.6"
 eth-utils = "^1.10.0"
 hexbytes = "^0.2.2"
-cytoolz = "^0.11.0"
-eth-keys = "^0.3.3"
-eth-rlp = "^0.2.1"
-livereload = "^2.6.3"
 toolz = "^0.11.1"
-boto3-stubs = {extras = ["kms"], version = "^1.18.50"}
-flake8-annotations = "^2.6.2"
+eth-account = "^0.5.6"
+
+[tool.poetry.dev-dependencies]
+black  = { version = "20.8b1" }
+isort  = { version = "5.6.4" }
+flake8  = { version = "3.8.4" }
+flake8-docstrings = { version = "^1.6.0" }
+pytest  = { version = "6.1.2" }
+pytest-cov  = { version = "2.10.1" }
+tox  = { version = "^3.20.1" }
+virtualenv  = { version = "^20.2.2" }
+pip  = { version = "^21.3.1" }
+mkdocs  = { version = "^1.1.2" }
+mkdocs-include-markdown-plugin  = { version = "^1.0.0" }
+mkdocs-material  = { version = "^6.1.7" }
+mkdocstrings  = { version = "^0.13.6" }
+mkdocs-material-extensions  = { version = "^1.0.1" }
+twine  = { version = "^3.3.0" }
+mkdocs-autorefs = { version = "0.1.1" }
+pre-commit = { version = "^2.12.0" }
+toml = { version = "^0.10.2" }
+boto3-stubs = { extras = ["kms"], version = "^1.18.50" }
+flake8-annotations = { version = "^2.6.2" }
+livereload = { version = "^2.6.3" }
 
 [tool.poetry.extras]
+actions = ["tox-gh-actions"]
 test = [
     "pytest",
     "black",
     "isort",
     "flake8",
     "flake8-docstrings",
-    "pytest-cov"
+    "pytest-cov",
+    "tox-gh-actions"
     ]
 
 dev = ["tox", "pre-commit", "virtualenv", "pip", "twine", "toml"]

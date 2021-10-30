@@ -2,9 +2,9 @@ from typing import Tuple
 
 from Crypto.Hash import keccak
 from eth_account.account import Account
+from eth_utils import to_checksum_address
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.type import namedtype, univ
-from eth_utils import to_checksum_address
 
 
 class SPKIAlgorithmIdentifierRecord(univ.Sequence):

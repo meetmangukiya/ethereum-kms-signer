@@ -2,11 +2,9 @@
 
 import json
 
-import boto3
 import fire
 
 from .kms import SignedTransaction, get_eth_address, sign_transaction
-from .spki import der_encoded_public_key_to_eth_address
 
 
 def help() -> None:
